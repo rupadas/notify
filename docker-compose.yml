@@ -1,0 +1,51 @@
+version: '3.8'
+
+x-common-variables:
+  &common-variables
+  MYSQL_USER: gotest
+  MYSQL_PASSWORD: gotest
+  MYSQL_ROOT_PASSWORD: gotest
+  MYSQL_DATABASE: raven
+  MYSQL_HOST: db
+  MYSQL_PORT: 3306
+  APP_PORT: 8000
+
+services:
+  db:
+    platform: linux/x86_64
+    image: mysql:8.0.28-debian
+    ports:
+      - "3306:3306"
+    environment: *common-variables
+
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: "always"
+    networks:
+      - raven_network
+
+  api:
+    container_name: api
+    restart: "always"
+    build:
+      context: .
+      dockerfile: ./api/Dockerfile
+    environment: *common-variables
+    depends_on:
+      - db
+    links:
+      - db
+    ports:
+      - 8000:8000
+    networks:
+      - raven_network
+    volumes:
+      - ./api:/src
+
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  raven_network:
+    name: raven_network
