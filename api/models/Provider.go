@@ -1,30 +1,37 @@
 package models
 
 import (
+	"encoding/json"
 	"time"
 
 	"gorm.io/gorm"
 )
 
-type ProviderModel struct {
+type Provider struct {
 	ID          uint        `gorm:"primary_key"`
 	Name        string      `gorm:"not null;unique"`
-	Key         string      `gorm:"not null"`
-	Token       string      `gorm:"not null"`
-	Environment environment `gorm:"type:ENUM('PRODUCTION', 'STAGING', 'QA', 'DEVELOPMENT');not null"`
+	AccessKey   string      `gorm:"not null"`
+	AccessToken string      `gorm:"not null"`
+	Environment Environment `gorm:"type:ENUM('PRODUCTION', 'STAGING', 'QA', 'DEVELOPMENT');not null"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`
 }
 
-type ChannelProviderRuleModel struct {
-	Channel     ChannelModel
+type ChannelProviderRule struct {
+	Channel     Channel
 	ChannelId   uint
-	Provider    ProviderModel
+	Provider    Provider
 	ProviderId  uint
 	Country     string      `gorm:"not null"`
-	Environment environment `gorm:"type:ENUM('PRODUCTION', 'STAGING', 'QA', 'DEVELOPMENT');not null"`
+	Environment Environment `gorm:"type:ENUM('PRODUCTION', 'STAGING', 'QA', 'DEVELOPMENT');not null"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`
+}
+
+type ProviderSetting struct {
+	Provider   Provider
+	ProviderId uint
+	Settings   json.RawMessage
 }

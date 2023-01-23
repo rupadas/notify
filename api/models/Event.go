@@ -13,22 +13,22 @@ const (
 	INACTIVE status = "INACTIVE"
 )
 
-type EventModel struct {
+type Event struct {
 	gorm.Model
 	ID          uint        `gorm:"primary_key"`
 	Name        string      `gorm:"not null;unique"`
 	Status      status      `gorm:"type:ENUM('ACTIVE', 'INACTIVE');not null;default:'ACTIVE'"`
-	Environment environment `gorm:"type:ENUM('PRODUCTION', 'STAGING', 'QA', 'DEVELOPMENT');not null"`
+	Environment Environment `gorm:"type:ENUM('PRODUCTION', 'STAGING', 'QA', 'DEVELOPMENT');not null"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
 
-type EventChannelModel struct {
-	Channel     ChannelModel
+type EventChannel struct {
+	Channel     Channel
 	ChannelId   uint
-	Event       EventModel
+	Event       Event
 	EventId     uint
-	Environment environment `gorm:"type:ENUM('PRODUCTION', 'STAGING', 'QA', 'DEVELOPMENT');not null"`
+	Environment Environment `gorm:"type:ENUM('PRODUCTION', 'STAGING', 'QA', 'DEVELOPMENT');not null"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`

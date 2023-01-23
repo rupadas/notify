@@ -6,20 +6,20 @@ import (
 	"gorm.io/gorm"
 )
 
-type environment string
+type Environment string
 
 const (
-	PRODUCTION  environment = "PRODUCTION"
-	STAGING     environment = "STAGING"
-	QA          environment = "QA"
-	DEVELOPMENT environment = "DEVELOPMENT"
+	PRODUCTION  Environment = "PRODUCTION"
+	STAGING     Environment = "STAGING"
+	QA          Environment = "QA"
+	DEVELOPMENT Environment = "DEVELOPMENT"
 )
 
-type AppModel struct {
+type App struct {
 	ID          uint        `gorm:"primary_key"`
-	Environment environment `gorm:"type:ENUM('PRODUCTION', 'STAGING', 'QA', 'DEVELOPMENT');not null"`
-	Key         string      `gorm:"not null"`
-	Token       string      `gorm:"not null"`
+	Environment Environment `gorm:"type:ENUM('PRODUCTION', 'STAGING', 'QA', 'DEVELOPMENT');not null"`
+	AccessKey   string      `gorm:"not null"`
+	AccessToken string      `gorm:"not null"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`
