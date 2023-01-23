@@ -9,8 +9,8 @@ import (
 )
 
 func Send(EmailBody common.EmailBody) {
-	from := "rupads123@gmail.com"
-	pass := "shokal@1"
+	from := "***@gmail.com"
+	pass := "***"
 	to := EmailBody.To
 	body := EmailBody.Body
 	title := EmailBody.Title
