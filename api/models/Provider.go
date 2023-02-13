@@ -8,22 +8,19 @@ import (
 )
 
 type Provider struct {
-	ID          uint        `gorm:"primary_key"`
-	Name        string      `gorm:"not null;unique"`
-	AccessKey   string      `gorm:"not null"`
-	AccessToken string      `gorm:"not null"`
-	Environment Environment `gorm:"type:ENUM('PRODUCTION', 'STAGING', 'QA', 'DEVELOPMENT');not null"`
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	DeletedAt   gorm.DeletedAt `gorm:"index"`
+	ID        uint   `gorm:"primary_key"`
+	Name      string `gorm:"not null;unique"`
+	Type      string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
-type ChannelProviderRule struct {
+type ChannelProvider struct {
 	Channel     Channel
 	ChannelId   uint
 	Provider    Provider
 	ProviderId  uint
-	Country     string      `gorm:"not null"`
 	Environment Environment `gorm:"type:ENUM('PRODUCTION', 'STAGING', 'QA', 'DEVELOPMENT');not null"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
@@ -31,7 +28,10 @@ type ChannelProviderRule struct {
 }
 
 type ProviderSetting struct {
-	Provider   Provider
-	ProviderId uint
-	Settings   json.RawMessage
+	ID          uint `gorm:"primary_key"`
+	Provider    Provider
+	ProviderId  uint
+	Country     string      `gorm:"not null"`
+	Environment Environment `gorm:"type:ENUM('PRODUCTION', 'STAGING', 'QA', 'DEVELOPMENT');not null"`
+	Settings    json.RawMessage
 }

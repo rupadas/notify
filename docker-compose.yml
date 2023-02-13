@@ -23,6 +23,22 @@ services:
     restart: "always"
     networks:
       - raven_network
+  
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    depends_on:
+      - db
+    links:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    networks:
+      - raven_network
 
   api:
     container_name: api
@@ -41,6 +57,7 @@ services:
       - raven_network
     volumes:
       - ./api:/src
+      
 
 volumes:
   db_data:

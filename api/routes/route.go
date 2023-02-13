@@ -80,14 +80,14 @@ func AddEvent(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(event)
 }
 
-type Channel struct {
+type ChannelObject struct {
 	Name string `json:"name"`
 	Id   uint   `json:"id"`
 }
 
 func AddEventChannels(c *fiber.Ctx) error {
 	// Extract the array of objects from the request
-	var channels []Channel
+	var channels []ChannelObject
 	if err := c.BodyParser(&channels); err != nil {
 		return err
 	}
@@ -105,7 +105,6 @@ func AddEventChannels(c *fiber.Ctx) error {
 		log.Println(ok)
 	}
 	environment = val
-
 	var eventChannels []models.EventChannel
 	for _, channel := range channels {
 		eventChannel := models.EventChannel{}
@@ -123,9 +122,8 @@ func AddProvider(c *fiber.Ctx) error {
 	val, ok := c.Locals("Environment").(models.Environment)
 	if !ok {
 		log.Println(ok)
+		log.Println(val)
 	}
-	environment := val
-	provider.Environment = environment
 	if err := c.BodyParser(provider); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(err.Error())
 	}
@@ -133,19 +131,14 @@ func AddProvider(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(provider)
 }
 
-type provider struct {
+type ProviderObject struct {
 	Name string `json:"name"`
 	Id   uint   `json:"id"`
 }
 
-type ProviderRule struct {
-	Country   string `json:"name"`
-	providers []provider
-}
-
 func AddChannelProvider(c *fiber.Ctx) error {
-	var ProviderRule ProviderRule
-	if err := c.BodyParser(&ProviderRule); err != nil {
+	var providers []ProviderObject
+	if err := c.BodyParser(&providers); err != nil {
 		return err
 	}
 	var channelId uint
@@ -160,12 +153,12 @@ func AddChannelProvider(c *fiber.Ctx) error {
 	val, ok := c.Locals("Environment").(models.Environment)
 	if !ok {
 		log.Println(ok)
+		log.Println(environment)
 	}
 	environment = val
-
-	var providerChannels []models.ChannelProviderRule
-	for _, provider := range ProviderRule.providers {
-		providerChannel := models.ChannelProviderRule{}
+	var providerChannels []models.ChannelProvider
+	for _, provider := range providers {
+		providerChannel := models.ChannelProvider{}
 		providerChannel.ProviderId = provider.Id
 		providerChannel.ChannelId = channelId
 		providerChannel.Environment = environment
@@ -175,14 +168,24 @@ func AddChannelProvider(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(providerChannels)
 }
 
-func UpdateProvider(c *fiber.Ctx) error {
-	provider := new(models.Provider)
-	if err := c.BodyParser(provider); err != nil {
+func AddProviderSetting(c *fiber.Ctx) error {
+	providersetting := new(models.ProviderSetting)
+	if err := c.BodyParser(providersetting); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
+	var environment models.Environment
+	val, ok := c.Locals("Environment").(models.Environment)
+	if !ok {
+		log.Println(ok)
+		log.Println(environment)
+	}
+	environment = val
 	id, _ := strconv.Atoi(c.Params("id"))
-	database.DBConn.Model(&models.Provider{}).Where("id = ?", id).Updates(models.Provider{AccessKey: provider.AccessKey, AccessToken: provider.AccessToken})
-	return c.Status(200).JSON(provider)
+	providersetting.ProviderId = uint(id)
+	providersetting.Environment = environment
+	log.Println(providersetting)
+	database.DBConn.Create(&providersetting)
+	return c.Status(200).JSON(providersetting)
 }
 
 func SendEmail(c *fiber.Ctx) error {
@@ -217,4 +220,18 @@ func SendSms(c *fiber.Ctx) error {
 	log.Println("smsData---", smsData)
 	sms.Send(*smsData)
 	return c.Status(http.StatusOK).JSON(map[string]bool{"successfully sent sms": true})
+}
+
+func FetchEventChannles(c *fiber.Ctx) error {
+	var eventId uint64
+	var err error
+	eventId, err = strconv.ParseUint(c.Params("id"), 10, 64)
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON("Invalid event ID")
+	}
+	var event models.Event
+	if err := database.DBConn.Preload("Channels").First(&event, eventId).Error; err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(err)
+	}
+	return c.JSON(event)
 }

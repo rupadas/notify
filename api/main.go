@@ -39,10 +39,11 @@ func setUpRoutes(app *fiber.App) {
 	app.Post("/events", authenticationMiddleware, routes.AddEvent)
 	app.Post("events/:id/channels", authenticationMiddleware, routes.AddEventChannels)
 	app.Post("/providers", authenticationMiddleware, routes.AddProvider)
-	app.Put("/providers/:id", authenticationMiddleware, routes.UpdateProvider)
 	app.Post("/channels/:id/providers", authenticationMiddleware, routes.AddChannelProvider)
 	app.Post("/events/sendEmail", authenticationMiddleware, routes.SendEmail)
 	app.Post("/events/sendSms", authenticationMiddleware, routes.SendSms)
+	app.Post("/providers/:id/setting", authenticationMiddleware, routes.AddProviderSetting)
+	app.Get("events/:id/channels", authenticationMiddleware, routes.FetchEventChannles)
 }
 
 func main() {

@@ -29,7 +29,7 @@ func ConnectDb() (*gorm.DB, error) {
 		return nil, err
 	}
 	log.Println("connected", db)
-	db.AutoMigrate(&models.App{}, &models.Channel{}, &models.Customer{}, &models.CustomerMeta{}, &models.Event{}, &models.EventChannel{}, &models.Provider{}, &models.ChannelProviderRule{})
+	db.AutoMigrate(&models.App{}, &models.Channel{}, &models.Customer{}, &models.CustomerMeta{}, &models.Event{}, &models.EventChannel{}, &models.Provider{}, &models.ChannelProvider{}, &models.ProviderSetting{})
 	DBConn = db
 	return db, nil
 }

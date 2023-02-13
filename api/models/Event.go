@@ -21,15 +21,11 @@ type Event struct {
 	Environment Environment `gorm:"type:ENUM('PRODUCTION', 'STAGING', 'QA', 'DEVELOPMENT');not null"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+	Channels    []Channel `gorm:"many2many:event_channels;"`
 }
 
 type EventChannel struct {
-	Channel     Channel
-	ChannelId   uint
-	Event       Event
 	EventId     uint
+	ChannelId   uint
 	Environment Environment `gorm:"type:ENUM('PRODUCTION', 'STAGING', 'QA', 'DEVELOPMENT');not null"`
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	DeletedAt   gorm.DeletedAt `gorm:"index"`
 }
