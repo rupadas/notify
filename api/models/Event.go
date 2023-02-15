@@ -2,8 +2,6 @@ package models
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type status string
@@ -14,7 +12,6 @@ const (
 )
 
 type Event struct {
-	gorm.Model
 	ID          uint        `gorm:"primary_key"`
 	Name        string      `gorm:"not null;unique"`
 	Status      status      `gorm:"type:ENUM('ACTIVE', 'INACTIVE');not null;default:'ACTIVE'"`

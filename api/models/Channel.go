@@ -7,7 +7,6 @@ import (
 )
 
 type Channel struct {
-	gorm.Model
 	ID          uint        `gorm:"primary_key"`
 	Name        string      `gorm:"not null;unique"`
 	Environment Environment `gorm:"type:ENUM('PRODUCTION', 'STAGING', 'QA', 'DEVELOPMENT');not null"`
