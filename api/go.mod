@@ -1,4 +1,4 @@
-module github.com/rupadas/raven
+module github.com/rupadas/notify
 
 go 1.19
 

@@ -3,7 +3,7 @@ package sms
 import (
 	"log"
 
-	common "github.com/rupadas/raven/config"
+	common "github.com/rupadas/notify/config"
 )
 
 func Send(smsBody common.SmsBody) {

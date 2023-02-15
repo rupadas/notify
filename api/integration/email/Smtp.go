@@ -5,7 +5,7 @@ import (
 	"net/smtp"
 	"os"
 
-	common "github.com/rupadas/raven/config"
+	common "github.com/rupadas/notify/config"
 )
 
 func Send(EmailBody common.EmailBody) {

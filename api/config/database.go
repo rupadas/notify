@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/rupadas/raven/models"
+	"github.com/rupadas/notify/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
