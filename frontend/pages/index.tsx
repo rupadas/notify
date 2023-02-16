@@ -12,6 +12,7 @@ export default function signUp() {
 
   const handleSubmit = event => {
     event.preventDefault();
+    
   }
   
   return (

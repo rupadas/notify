@@ -10,6 +10,8 @@ type Channel struct {
 	ID          uint        `gorm:"primary_key"`
 	Name        string      `gorm:"not null;unique"`
 	Environment Environment `gorm:"type:ENUM('PRODUCTION', 'STAGING', 'QA', 'DEVELOPMENT');not null"`
+	App         App         `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	AppId       uint
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`

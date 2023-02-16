@@ -7,21 +7,22 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	database "github.com/rupadas/notify/config"
+	"github.com/rupadas/notify/helper"
 	"github.com/rupadas/notify/models"
 )
 
 func AddEvent(c *fiber.Ctx) error {
 	event := new(models.Event)
-	val, ok := c.Locals("Environment").(models.Environment)
-	if !ok {
-		log.Println(ok)
-	}
-	environment := val
 	if err := c.BodyParser(event); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(err.Error())
 	}
+	environment, appId, err := helper.FetchEnvAndAppId(c)
+	if err != nil {
+		log.Println(err)
+		return c.Status(http.StatusInternalServerError).JSON("Failed to fetch environment and appId")
+	}
 	event.Environment = environment
-	log.Println(event)
+	event.AppId = appId
 	database.DBConn.Create(&event)
 	return c.Status(http.StatusOK).JSON(event)
 }
@@ -40,17 +41,17 @@ func AddEventChannels(c *fiber.Ctx) error {
 	var eventId uint
 	var err error
 	var tempEventId uint64
-	var environment models.Environment
 	tempEventId, err = strconv.ParseUint(c.Params("id"), 10, 64)
 	if err != nil {
 		return c.Status(http.StatusBadRequest).JSON("Invalid event ID")
 	}
 	eventId = uint(tempEventId)
-	val, ok := c.Locals("Environment").(models.Environment)
-	if !ok {
-		log.Println(ok)
+	environment, appId, err := helper.FetchEnvAndAppId(c)
+	if err != nil {
+		log.Println(err)
+		log.Println(appId)
+		return c.Status(http.StatusInternalServerError).JSON("Failed to fetch environment and appId")
 	}
-	environment = val
 	var eventChannels []models.EventChannel
 	for _, channel := range channels {
 		eventChannel := models.EventChannel{}

@@ -51,6 +51,9 @@ func AuthenticationMiddleware(c *fiber.Ctx) error {
 	AccessToken := c.Get("AccessToken")
 	app, error := handler.GetApp(AcessKey, AccessToken)
 	log.Println(error)
+	if error != nil {
+		return errors.New("couldn't find appid")
+	}
 	c.Locals("Environment", app.Environment)
 	c.Locals("appId", app.ID)
 	err := c.Next()

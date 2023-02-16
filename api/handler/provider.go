@@ -7,16 +7,18 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	database "github.com/rupadas/notify/config"
+	"github.com/rupadas/notify/helper"
 	"github.com/rupadas/notify/models"
 )
 
 func AddProvider(c *fiber.Ctx) error {
 	provider := new(models.Provider)
-	val, ok := c.Locals("Environment").(models.Environment)
-	if !ok {
-		log.Println(ok)
-		log.Println(val)
+	environment, appId, err := helper.FetchEnvAndAppId(c)
+	if err != nil {
+		log.Println(err)
 	}
+	provider.AppId = appId
+	provider.Environment = environment
 	if err := c.BodyParser(provider); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(err.Error())
 	}

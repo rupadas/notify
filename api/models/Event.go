@@ -16,6 +16,8 @@ type Event struct {
 	Name        string      `gorm:"not null;unique"`
 	Status      status      `gorm:"type:ENUM('ACTIVE', 'INACTIVE');not null;default:'ACTIVE'"`
 	Environment Environment `gorm:"type:ENUM('PRODUCTION', 'STAGING', 'QA', 'DEVELOPMENT');not null"`
+	App         App         `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	AppId       uint
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	Channels    []Channel `gorm:"many2many:event_channels;"`
